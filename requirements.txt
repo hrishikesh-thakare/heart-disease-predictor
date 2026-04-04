@@ -5,3 +5,4 @@ numpy
 networkx
 matplotlib
 scikit-learn
+joblib

@@ -1,77 +1,67 @@
-# Heart Disease Risk Predictor (Bayesian Network Model)
+# Heart Disease Risk Predictor (Dual-Model Comparative Dashboard)
 
-A robust, interactive web application that predicts a patient's risk of heart disease using a **Causal Bayesian Network**. Unlike standard "black-box" machine learning models, this application leverages probabilistic modeling and **Explainable AI (XAI)** to not only predict the risk, but mathematically explain *why* the model made its prediction.
+A robust, interactive web application that evaluates a patient's risk of heart disease by comparing two distinct AI architectures: a **Causal Bayesian Network** and a **Random Forest**. This application bridges the gap between high-performance "black-box" prediction and clinical **Explainable AI (XAI)**.
 
 ## Key Features
 
-*   **Probabilistic Modeling:** Built using a Bayesian Network (`pgmpy`) that models the conditional dependencies between various patient vitals and health history factors.
-*   **Explainable AI (XAI):** Automatically performs counterfactual reasoning (e.g., "What if this patient didn't smoke?") to quantify the exact percentage impact of individual risk factors on the total probability score.
-*   **Interactive UI:** A highly responsive Streamlit dashboard featuring color-coded risk assessment headers (High, Medium, Low) and intuitive input forms.
-*   **Transparent Output:** Exposes the raw probability breakdown $P(Disease=Yes)$ vs $P(Disease=No)$ for clinical transparency.
+*   **Model Comparison:** Side-by-side analysis of a **Random Forest** (optimized for predictive accuracy) vs. a **Bayesian Network** (optimized for causal reasoning).
+*   **Explainable AI (XAI):** Uses the Bayesian Network to perform counterfactual reasoning (e.g., "What if this patient didn't smoke?") to quantify the exact percentage impact of individual risk factors.
+*   **Dual-Inference Engine:** 
+    *   **Random Forest:** Identifies complex, non-linear patterns across vitals.
+    *   **Bayesian Network:** Maps the probabilistic dependencies between health factors.
+*   **Interactive UI:** A professional Streamlit dashboard featuring color-coded risk assessment and intuitive input forms.
+*   **Unified Input:** Both models accept the same 9 clinical features for a direct, fair comparison.
 
 ---
 
 ## Tech Stack
 
-*   **Frontend:** [Streamlit](https://streamlit.io/) (for rapid, data-centric web UI generation)
-*   **Modeling & Inference:** [pgmpy](https://pgmpy.org/) (for creating and querying the Discrete Bayesian Network)
-*   **Data Processing:** `pandas`, `numpy`
-*   **Model Persistence:** `pickle`
+*   **Frontend:** [Streamlit](https://streamlit.io/)
+*   **Harnessing PGMs:** [pgmpy](https://pgmpy.org/) (Bayesian Network inference)
+*   **Machine Learning:** `scikit-learn` (Random Forest prediction)
+*   **Data Handling:** `pandas`, `numpy`, `joblib`
 
 ---
 
 ## How to Run the Project Locally
 
-Follow these steps to set up the environment and run the application on your machine:
-
 ### 1. Prerequisites
-Ensure you have Python 3.8+ installed on your system.
+Ensure you have Python 3.8+ installed.
 
-### 2. Set up a Virtual Environment (Recommended)
-Creating a virtual environment ensures that the project's dependencies are isolated from your system Python.
-
+### 2. Set up a Virtual Environment
 ```bash
 # Create the virtual environment
 python -m venv venv
 
-# Activate the environment
-# On Windows:
+# Activate the environment (Windows)
 .\venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
-Once the environment is active, install the required Python packages:
-
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Run the Streamlit Application
-Start the Streamlit server to launch the frontend:
-
+### 4. Run the Application
 ```bash
-streamlit run app.py
+streamlit run heart_dashboard.py
 ```
-
-### 5. Access the Dashboard
-Once the server starts, it will automatically open the application in your default web browser. If it doesn't, navigate to `http://localhost:8501`.
 
 ---
 
 ## Project Structure
 
-*   `app.py`: The main Streamlit web application script handling the UI, user inputs, XAI logic, and model inference.
-*   `heart_disease_model.pkl`: The trained Causal Bayesian Network model, serialized for quick load times.
-*   `heart-disease-model.ipynb`: The Jupyter Notebook used for the original exploratory data analysis (EDA), structure learning, and model training. 
-*   `requirements.txt`: The list of python dependencies required to run the environment.
-*   `heart_disease_model.xmlbif`: A legacy XMLBIF format of the model structure (kept for backward compatibility reference).
+*   **`heart_dashboard.py`**: The main entry point for the Streamlit application.
+*   **`bayesian_network.pkl`**: The trained Causal Bayesian Network model.
+*   **`random_forest.pkl`**: The trained Random Forest model.
+*   **`requirements.txt`**: Project dependencies.
 
 ---
 
 ## How the Inference Works
 
-1. **Evidence Collection:** The UI collects patient inputs (Age, Gender, Blood Pressure, Smoking History, etc.) and formats them into a binary evidence dictionary (e.g., `{"High_BP": "1.0", "Smoking": "0.0"}`).
-2. **Variable Elimination:** The application uses exact inference via `VariableElimination` to calculate the marginal probability of the target node (`Disease`) given the provided evidence.
-3. **Counterfactual Analysis:** To generate the "Risk Attribution" section, the application systematically flips active risk factors (e.g., changing "High BP" from "Yes" to "No") and re-queries the model to isolate and measure the absolute impact of each factor on the patient's resulting probability score.
+1.  **Unified Evidence Collection:** Both models utilize the same input features (Age, Gender, Blood Pressure, Smoking History, etc.).
+2.  **Comparative Analysis:** 
+    *   The **Random Forest** predicts the probability based on tree-based decision paths.
+    *   The **Bayesian Network** uses **Variable Elimination** to calculate risk through probabilistic dependencies.
+3.  **Risk Attribution (XAI):** The Bayesian Network isolates factors (e.g., changing "High BP" to "No") to measure the absolute impact of each risk factor on the patient's resulting probability score.
